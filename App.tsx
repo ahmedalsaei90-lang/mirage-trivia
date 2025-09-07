@@ -1,96 +1,62 @@
-import "react-native-gesture-handler";
-import React, { useEffect, useState } from "react";
-import { View, Text, TextInput, Button } from "react-native";
+import React, { useEffect } from "react";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import * as Linking from "expo-linking";
-import { supabase } from "./src/lib/supabase";
+import HomeScreen from "./src/screens/Home";      // (or placeholder)
+import LeaderboardScreen from "./src/screens/Leaderboard";
+import QuizZoneScreen from "./src/screens/QuizZone";
+import PlayZoneScreen from "./src/screens/PlayZone";
 import ProfileScreen from "./src/screens/Profile";
+import { useAuth } from "./src/state/auth";
 
 const Tab = createBottomTabNavigator();
-
-// Simple placeholder screen used for Home/LeaderBoard/QuizZone
-const Screen = ({ title }: { title: string }) => (
-  <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-    <Text style={{ fontSize: 22 }}>{title}</Text>
-  </View>
-);
-
-// --- PlayZone (same as you had; keep or simplify) ---
-const PlayZone = () => {
-  const [code, setCode] = useState("TEST");
-
-  const simulateJoin = () => {
-    const url = `miragetrivia://join?code=${encodeURIComponent(code)}`;
-    Linking.openURL(url);
-  };
-
-  return (
-    <View style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 18, textAlign: "center", marginVertical: 8 }}>
-        DEV: Simulate Join Link
-      </Text>
-      <Text style={{ marginBottom: 8 }}>Join by code (UI placeholder)</Text>
-      <TextInput
-        value={code}
-        onChangeText={setCode}
-        placeholder="Enter code"
-        style={{
-          borderWidth: 1,
-          borderColor: "#ccc",
-          padding: 12,
-          borderRadius: 8,
-        }}
-      />
-      <View style={{ height: 12 }} />
-      <Button title="Open miragetrivia://join?code=..." onPress={simulateJoin} />
-    </View>
-  );
-};
-
-// Optional: deep link handling (keep if you had it)
-const SCHEME = "miragetrivia";
-const prefix = Linking.createURL("/");
-
-const linking = {
-  prefixes: [prefix, `${SCHEME}://`],
-  config: {
-    screens: {
-      Home: "",
-      LeaderBoard: "leaderboard",
-      "Quiz Zone": "quiz",
-      "Play Zone": "play",
-      Profile: "profile",
-    },
-  },
-};
+const theme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, primary: "#6f3cff" }};
 
 export default function App() {
-  // Example deep-link listener
-  useEffect(() => {
-    const sub = Linking.addEventListener("url", ({ url }) => {
-      // handleURL(url) // add your code if needed
-    });
-    return () => sub.remove();
-  }, []);
+  const { init, ready } = useAuth();
 
-  // Wrapper components so we can use `component={...}`
-  const HomeTab = () => <Screen title="Home" />;
-  const LeaderBoardTab = () => <Screen title="LeaderBoard" />;
-  const QuizZoneTab = () => <Screen title="Quiz Zone" />;
+  useEffect(() => { init(); }, [init]);
 
-  const theme = {
-    ...DefaultTheme,
-    colors: { ...DefaultTheme.colors, background: "#fff" },
-  };
+  if (!ready) return null; // simple splash; you can render a loader
 
   return (
-    <NavigationContainer linking={linking} theme={theme}>
-      <Tab.Navigator screenOptions={{ headerShown: false }}>
-        <Tab.Screen name="Home" component={HomeTab} />
-        <Tab.Screen name="LeaderBoard" component={LeaderBoardTab} />
-        <Tab.Screen name="Quiz Zone" component={QuizZoneTab} />
-        <Tab.Screen name="Play Zone" component={PlayZone} />
+    <NavigationContainer theme={theme}>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="LeaderBoard" component={LeaderboardScreen} />
+        <Tab.Screen name="Quiz Zone" component={QuizZoneScreen} />
+        <Tab.Screen name="Play Zone" component={PlayZoneScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+import React, { useEffect } from "react";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeScreen from "./src/screens/Home";      // (or placeholder)
+import LeaderboardScreen from "./src/screens/Leaderboard";
+import QuizZoneScreen from "./src/screens/QuizZone";
+import PlayZoneScreen from "./src/screens/PlayZone";
+import ProfileScreen from "./src/screens/Profile";
+import { useAuth } from "./src/state/auth";
+
+const Tab = createBottomTabNavigator();
+const theme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, primary: "#6f3cff" }};
+
+export default function App() {
+  const { init, ready } = useAuth();
+
+  useEffect(() => { init(); }, [init]);
+
+  if (!ready) return null; // simple splash; you can render a loader
+
+  return (
+    <NavigationContainer theme={theme}>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="LeaderBoard" component={LeaderboardScreen} />
+        <Tab.Screen name="Quiz Zone" component={QuizZoneScreen} />
+        <Tab.Screen name="Play Zone" component={PlayZoneScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
     </NavigationContainer>
