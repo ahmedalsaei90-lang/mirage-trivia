@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "Mirage Trivia",
+    "slug": "mirage-trivia",
+    "version": "1.0.0",
+    "scheme": "miragetrivia",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ahmedalsaei90lang.miragetrivia",
+      "infoPlist": {
+        "LSApplicationQueriesSchemes": ["miragetrivia"]
+      }
+    },
+    "android": {
+      "package": "com.ahmedalsaei90lang.miragetrivia",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            { "scheme": "miragetrivia", "host": "*", "pathPrefix": "/join" },
+            { "scheme": "miragetrivia" }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "extra": {
+      "eas": {
+        "projectId": "CHANGE_ME_IF_USING_EAS"
+      }
+    }
+  }
+}
